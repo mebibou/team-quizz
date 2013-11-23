@@ -18,6 +18,7 @@ require_once ENGINEPATH.'/engine-quizz-config.php';
 require_once ENGINEPATH.'/engine-admin-ui.php';
 
 require_once ENGINEPATH.'/engine-quizz.php';
+require_once ENGINEPATH.'/engine-quizz-acf.php';
 
 // ---------------- ENGINE ----------------
 
