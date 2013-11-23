@@ -1,0 +1,25 @@
+{
+  "manifest_version": 2,
+
+  "name": "Team Quizz",
+  "description": "Client Server Chrome extension to gamify your team works",
+  "version": "1.0",
+  "author": "Xavier Boubert (http://xavierboubert.fr) & Qian Zhao",
+
+  "icons": {
+    "16": "assets/images/icon.png",
+    "48": "assets/images/icon.png",
+    "128": "assets/images/icon.png"
+  },
+  "permissions": [
+    "http://teamquizz.xavierboubert.fr/"
+  ],
+  "browser_action": {
+    "default_title": "Team Quizz",
+    "default_icon": "assets/images/icon.png",
+  },
+  "background": {
+    "scripts": ["js/app.js"],
+    "persistent": false
+  }
+}
