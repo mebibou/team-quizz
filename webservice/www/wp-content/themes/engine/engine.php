@@ -17,6 +17,8 @@ require_once ENGINEPATH.'/engine-quizz-config.php';
 
 require_once ENGINEPATH.'/engine-admin-ui.php';
 
+require_once ENGINEPATH.'/engine-quizz.php';
+
 // ---------------- ENGINE ----------------
 
 function engine_theme_setup($config) {

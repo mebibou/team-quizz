@@ -15,10 +15,14 @@ function getset_option($name, $default, $newValue = null) {
   return get_option($name, $default);
 }
 
+function quizz_item_name() {
+  return 'Quizz';
+}
+
 function quizz_interval_time($newValue = null) {
-  return getset_option('quizz_interval_time', '30', $newValue);
+  return getset_option('quizz_interval_time', '30', $newValue); // Default 30min
 }
 
 function quizz_respond_time($newValue = null) {
-  return getset_option('quizz_respond_time', '30', $newValue);
+  return getset_option('quizz_respond_time', '30', $newValue); // Default 30sec
 }

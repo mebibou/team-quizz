@@ -1,0 +1,8 @@
+.icon16.icon-post, #adminmenu .menu-icon-post div.wp-menu-image {
+  background-image: url("../images/question-balloon.png");
+  background-position: 6px 6px;
+}
+
+#adminmenu .menu-icon-post:hover div.wp-menu-image {
+  background-position: 6px 6px;
+}

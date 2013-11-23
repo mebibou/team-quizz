@@ -108,7 +108,7 @@ function remove_menus () {
   global $menu;
 
   //$restricted = array(__('Dashboard'), __('Posts'), __('Media'), __('Links'), __('Pages'), __('Appearance'), __('Tools'), __('Users'), __('Settings'), __('Comments'), __('Plugins'));
-  $restricted = array(__('Posts'), __('Media'), __('Links'), __('Pages'), __('Comments'));
+  $restricted = array(__('Media'), __('Links'), __('Pages'), __('Comments'));
   
   global $current_user;
   get_currentuserinfo();
@@ -127,3 +127,12 @@ function remove_menus () {
   remove_submenu_page('edit.php', 'edit-tags.php?taxonomy=category');
 }
 add_action('admin_menu', 'remove_menus');
+
+// ---------------- ADMIN STYLE ----------------
+
+function admin_css() {
+?>
+  <link rel="stylesheet" type="text/css" href="<?php echo ENGINEURI; ?>/css/admin.css" />
+<?php
+}
+add_action('admin_head', 'admin_css');
