@@ -1,0 +1,9 @@
+QUESTIONS: 
+  ☐ http://codes-sources.commentcamarche.net/source/52879-quiz-html-css-et-javascript
+
+ADMIN:
+  ☐ Créer des questions
+  ☐ Configurer les paramètres
+    ☐ Temps entre chaque question
+    ☐ Temps limite de réponse
+  ☐ Créer l'API RESTfull
