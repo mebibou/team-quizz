@@ -2,6 +2,7 @@
 
 switch(get_query_var('action')) {
   case 'avatars':
+    // TEST http://teamquizz.xavierboubert.fr/avatars
 
     $result = array('avatars' => array());
 
@@ -9,10 +10,35 @@ switch(get_query_var('action')) {
       $result['avatars'] []= AVATARSURI . '/' . $avatar;
     }
 
-    echo json_encode($result);
+    api_result($result);
 
     break;
   case 'register':
+    // TEST: http://teamquizz.xavierboubert.fr/register/Larousse?username=Xavier&avatar=http%3A%2F%2Fteamquizz.xavierboubert.fr%2Fuserpictures%2FWerewolf-icon.png
+
+    $result = array('success' => false);
+
+    $channel = get_channel();
+    if(!isset($_GET['username'])) {
+      $result['error'] = 'Vous devez renseigner un username';
+      api_result($result);
+    }
+    else if(!isset($_GET['avatar'])) {
+      $result['error'] = 'Vous devez renseigner un avatar';
+      api_result($result);
+    }
+
+    $username = $_GET['username'];
+    $avatar = $_GET['avatar'];
+
+    register_channel($channel);
+
+    register_user($channel, $username, $avatar);
+    
+    $result['success'] = true;
+
+    api_result($result);
+
     break;
   case 'play':
     break;
