@@ -3,7 +3,17 @@ QUESTIONS:
 
 ADMIN:
   ☐ Créer des questions
-  ☐ Configurer les paramètres
-    ☐ Temps entre chaque question
-    ☐ Temps limite de réponse
   ☐ Créer l'API RESTfull
+  ☐ Temps limite pour répondre à une question
+
+EVENTS:
+
+
+ACHIVEMENTS:
+  ☐ Thief points from worst player
+  ☐ Double points
+  ☐ Every players give 1 point to winner
+
+
+SPECIALS SKILLS TO CHANGE GAME:
+  ☐ Changer le temps avec un autre joueur
