@@ -1,22 +1,29 @@
 <?php
 
 switch(get_query_var('action')) {
-  case: 'avatars':
+  case 'avatars':
+
+    $result = array('avatars' => array());
+
+    foreach(get_avatars() as $avatar) {
+      $result['avatars'] []= AVATARSURI . '/' . $avatar;
+    }
+
+    echo json_encode($result);
+
     break;
-  case: 'canplay':
+  case 'canplay':
     break;
-  case: 'play':
+  case 'play':
     break;
-  case: 'answer':
+  case 'answer':
     break;
-  case: 'results':
+  case 'results':
     break;
   default:
 }
 
-?>
-
-<?php /*
+ /*
 
   <div id="primary" class="site-content">
     <div id="content" role="main">
@@ -63,4 +70,3 @@ switch(get_query_var('action')) {
     </div><!-- #content -->
   </div><!-- #primary -->
 */
-?>

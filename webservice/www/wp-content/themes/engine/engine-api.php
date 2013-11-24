@@ -96,3 +96,14 @@ add_filter('query_vars', 'tq_query_vars');
 function get_channel() {
   return strtolower(get_query_var('channel'));
 }
+
+// ---------------- CHANNELS ----------------
+
+define('AVATARSPATH', ABSPATH.'/userpictures');
+define('AVATARSURI', home_url().'/userpictures');
+
+function get_avatars() {
+  return array_filter(scandir(AVATARSPATH), function($value) {
+    return pathinfo($value, PATHINFO_EXTENSION) == 'png';
+  });
+}
