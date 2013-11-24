@@ -12,7 +12,7 @@ switch(get_query_var('action')) {
     echo json_encode($result);
 
     break;
-  case 'canplay':
+  case 'register':
     break;
   case 'play':
     break;

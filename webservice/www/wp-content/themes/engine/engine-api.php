@@ -35,25 +35,11 @@
  *
  *
  *
- * = Tables =========================================================
- *
- * [QuizzUsers]
- * id INT, channel STRING, name STRING, avatar STRING, points INT
- *
- * [QuizzResults]
- * channel STRING, date INT, winner INT, members STRING([<int>, ...]), message STRING
- *
- * [QuizzChannels]
- * channel STRING, playDate INT, quizz: <int>, members STRING([<int>, ...]), results STRING([{user: <int>, answer: <string>, time: <int>}, ...])
- *
- *
- *
- *
  * = Chrome extension actions order =========================================================
  *
  * First start:
  *   1) Get avatars list -> show register form (INPUTS: username + channel + avatar)
- *   2) Check server access with /canplay
+ *   2) Register user access with /register
  *   3) Keep in hard memory these informations (Local storage ?) 
  *
  * Second start:
@@ -97,7 +83,7 @@ function get_channel() {
   return strtolower(get_query_var('channel'));
 }
 
-// ---------------- CHANNELS ----------------
+// ---------------- AVATARS ----------------
 
 define('AVATARSPATH', ABSPATH.'/userpictures');
 define('AVATARSURI', home_url().'/userpictures');
@@ -107,3 +93,65 @@ function get_avatars() {
     return pathinfo($value, PATHINFO_EXTENSION) == 'png';
   });
 }
+
+// ---------------- TABLES ----------------
+
+function table_users() {
+  global $wpdb;
+  return $wpdb->prefix . 'quizzusers';
+}
+
+function table_channels() {
+  global $wpdb;
+  return $wpdb->prefix . 'quizzchannels';
+}
+
+function table_results() {
+  global $wpdb;
+  return $wpdb->prefix . 'quizzresults';
+}
+
+function tq_create_tables() {
+  global $wpdb;
+
+  $tableUsers = table_users();
+  $tableChannels = table_channels();
+  $tableResults = table_results();
+
+  if($wpdb->get_var('SHOW TABLES LIKE "' . $tableUsers . '"') != $tableUsers) {
+    require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+    dbDelta('CREATE TABLE ' . $tableUsers . '(
+      id int(11) NOT NULL AUTO_INCREMENT,
+      channel varchar(255) DEFAULT NULL,
+      name varchar(255) DEFAULT NULL,
+      avatar varchar(255) DEFAULT NULL,
+      points int(11) DEFAULT 0,
+      UNIQUE KEY id (id)
+    )');
+
+    dbDelta('CREATE TABLE ' . $tableChannels . '(
+      id int(11) NOT NULL AUTO_INCREMENT,
+      channel varchar(255) DEFAULT NULL,
+      playDate int(11) DEFAULT 0,
+      quizz int(11) DEFAULT 0,
+      members TEXT,
+      results TEXT,
+      UNIQUE KEY id (id)
+    )');
+
+    dbDelta('CREATE TABLE ' . $tableResults . '(
+      id int(11) NOT NULL AUTO_INCREMENT,
+      channel varchar(255) DEFAULT NULL,
+      date int(11) DEFAULT 0,
+      winner int(11) DEFAULT 0,
+      members TEXT,
+      message TEXT,
+      UNIQUE KEY id (id)
+    )');
+  }
+
+  //$row = $wpdb->get_row($wpdb->prepare('SELECT COUNT(*) FROM '.$tableUsers));
+  //var_dump($row);
+}
+add_action('init', 'tq_create_tables');

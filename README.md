@@ -15,3 +15,4 @@ Installation
 1) Install the server (TODO)
 1) Activer le theme team-quizz
 1) Activer advanced-custom-fields
+1) Activer les permalinks
