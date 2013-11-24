@@ -13,6 +13,5 @@ Installation
 ==========
 
 1) Install the server (TODO)
-1) Update manifest.json Webserver URL from extension (TODO)
 1) Activer le theme team-quizz
 1) Activer advanced-custom-fields

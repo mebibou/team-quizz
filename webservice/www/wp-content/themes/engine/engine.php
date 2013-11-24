@@ -20,6 +20,8 @@ require_once ENGINEPATH.'/engine-admin-ui.php';
 require_once ENGINEPATH.'/engine-quizz.php';
 require_once ENGINEPATH.'/engine-quizz-acf.php';
 
+require_once ENGINEPATH.'/engine-api.php';
+
 // ---------------- ENGINE ----------------
 
 function engine_theme_setup($config) {
