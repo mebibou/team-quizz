@@ -23,6 +23,10 @@ function quizz_interval_time($newValue = null) {
   return getset_option('quizz_interval_time', '30', $newValue); // Default 30min
 }
 
+function quizz_participate_time($newValue = null) {
+  return getset_option('quizz_participate_time', '60', $newValue); // Default 30min
+}
+
 function quizz_respond_time($newValue = null) {
   return getset_option('quizz_respond_time', '30', $newValue); // Default 30sec
 }

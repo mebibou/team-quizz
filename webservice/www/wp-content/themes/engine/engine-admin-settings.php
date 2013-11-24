@@ -14,6 +14,9 @@ if (isset($_POST['update_form']) && $_POST['update_form'] == 'yes') {
   $quizzIntervalTime = isset($_POST['quizz_interval_time']) && is_numeric($_POST['quizz_interval_time']) ? (int) $_POST['quizz_interval_time'] : null;
   quizz_interval_time($quizzIntervalTime);
 
+  $quizzRespondTime = isset($_POST['quizz_participate_time']) && is_numeric($_POST['quizz_participate_time']) ? (int) $_POST['quizz_participate_time'] : null;
+  quizz_participate_time($quizzRespondTime);
+
   $quizzRespondTime = isset($_POST['quizz_respond_time']) && is_numeric($_POST['quizz_respond_time']) ? (int) $_POST['quizz_respond_time'] : null;
   quizz_respond_time($quizzRespondTime);
 
@@ -23,6 +26,7 @@ if (isset($_POST['update_form']) && $_POST['update_form'] == 'yes') {
 }
 
 $quizzIntervalTime = quizz_interval_time();
+$quizzParticipateTime = quizz_participate_time();
 $quizzRespondTime = quizz_respond_time();
 
 ?>
@@ -48,7 +52,16 @@ $quizzRespondTime = quizz_respond_time();
       </tr>
       <tr valign="top">
         <th scope="row">
-          <label for="quizz_respond_time">Temps maximal pour répondre à un Quizz :</label>
+          <label for="quizz_participate_time">Temps pour participer à un nouveau quizz :</label>
+        </th>
+        <td>
+          <input type="text" name="quizz_participate_time" id="quizz_participate_time" class="regular-text" value="<?php echo $quizzParticipateTime; ?>" />
+          <p class="description">Unités exprimées en secondes</p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <th scope="row">
+          <label for="quizz_respond_time">Temps maximal pour donner le résultat d'un Quizz :</label>
         </th>
         <td>
           <input type="text" name="quizz_respond_time" id="quizz_respond_time" class="regular-text" value="<?php echo $quizzRespondTime; ?>" />
