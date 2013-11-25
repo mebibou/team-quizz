@@ -34,13 +34,87 @@ switch(get_query_var('action')) {
     register_channel($channel);
 
     register_user($channel, $username, $avatar);
-    
+
     $result['success'] = true;
 
     api_result($result);
 
     break;
   case 'play':
+    // TEST: http://teamquizz.xavierboubert.fr/play/Larousse?username=Xavier
+
+    $result = array('success' => false);
+
+    $channel = get_channel();
+    $channelInfos = get_channel_infos($channel);
+
+    if(!$channelInfos) {
+      $result['error'] = 'Ce channel n\'existe pas';
+      api_result($result);
+    }
+
+    if(!isset($_GET['username'])) {
+      $result['error'] = 'Vous devez renseigner un username';
+      api_result($result);
+    }
+
+    $username = $_GET['username'];
+    $userInfos = get_user_infos($channel, $username);
+
+    if(!$userInfos) {
+      $result['error'] = 'Cet utilisateur n\'existe pas';
+      api_result($result);
+    }
+
+    $quizz = null;
+    $quizzResult = null;
+
+    $intervalTime = quizz_interval_time() * 60;
+    $respondTime = quizz_participate_time() + quizz_respond_time() + quizz_chrome_extension_ajax_time();
+
+    // START PLAYING QUIZZ
+    if(!$channelInfos['isPlaying'] && $channelInfos['playDate'] < date('U') - $intervalTime) {
+      $channelInfos['isPlaying'] = true;
+      $channelInfos['quizz'] = get_random_quizz();
+      $channelInfos['playDate'] = date('U');
+      $channelInfos['askers'] = '';
+      $channelInfos['members'] = '';
+      $channelInfos['returnResult'] = '';
+      $channelInfos['results'] = '';
+      update_channel($channelInfos);
+    }
+
+    // GET QUIZZ
+    if($channelInfos['isPlaying'] && !in_array($userInfos['id'], $channelInfos['askers'])) {
+      $channelInfos['askers'] []= $userInfos['id'];
+      update_channel($channelInfos);
+
+      $result['quizz'] = get_quizz($channelInfos['quizz']);
+    }
+
+    // STOP PLAYING ACTUAL QUIZZ
+    if($channelInfos['isPlaying'] && $channelInfos['playDate'] < date('U') - $respondTime) {
+
+    }
+
+    // GET QUIZZ RESPOND
+    if(!$channelInfos['isPlaying'] && in_array($userInfos['id'], $channelInfos['members']) && !in_array($userInfos['id'], $channelInfos['returnResult'])) {
+
+      $channelInfos['returnResult'] []= $userInfos['id'];
+      update_channel($channelInfos);
+
+      $userInfos = get_user_infos($channel, $username);
+
+      $result['quizzResult'] = array();
+    }
+
+    $result['success'] = true;
+    $result['quizz'] = $quizz;
+    $result['quizzResult'] = $quizzResult;
+    $result['points'] = $userInfos['points'];
+
+    api_result($result);
+
     break;
   case 'answer':
     break;
@@ -48,51 +122,3 @@ switch(get_query_var('action')) {
     break;
   default:
 }
-
- /*
-
-  <div id="primary" class="site-content">
-    <div id="content" role="main">
-    <?php if ( have_posts() ) : ?>
-
-      <?php while ( have_posts() ) : the_post(); ?>
-        <?php get_template_part( 'content', get_post_format() ); ?>
-      <?php endwhile; ?>
-
-      <?php twentytwelve_content_nav( 'nav-below' ); ?>
-
-    <?php else : ?>
-
-      <article id="post-0" class="post no-results not-found">
-
-      <?php if ( current_user_can( 'edit_posts' ) ) :
-        // Show a different message to a logged-in user who can add posts.
-      ?>
-        <header class="entry-header">
-          <h1 class="entry-title"><?php _e( 'No posts to display', 'twentytwelve' ); ?></h1>
-        </header>
-
-        <div class="entry-content">
-          <p><?php printf( __( 'Ready to publish your first post? <a href="%s">Get started here</a>.', 'twentytwelve' ), admin_url( 'post-new.php' ) ); ?></p>
-        </div><!-- .entry-content -->
-
-      <?php else :
-        // Show the default message to everyone else.
-      ?>
-        <header class="entry-header">
-          <h1 class="entry-title"><?php _e( 'Nothing Found', 'twentytwelve' ); ?></h1>
-        </header>
-
-        <div class="entry-content">
-          <p><?php _e( 'Apologies, but no results were found. Perhaps searching will help find a related post.', 'twentytwelve' ); ?></p>
-          <?php get_search_form(); ?>
-        </div><!-- .entry-content -->
-      <?php endif; // end current_user_can() check ?>
-
-      </article><!-- #post-0 -->
-
-    <?php endif; // end have_posts() check ?>
-
-    </div><!-- #content -->
-  </div><!-- #primary -->
-*/

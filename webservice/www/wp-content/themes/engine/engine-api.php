@@ -85,6 +85,41 @@ function api_result($result) {
   exit;
 }
 
+// ---------------- QUIZZ ----------------
+
+function get_random_quizz() {
+  $post = array_rand(get_posts(array(
+    'posts_per_page' => -1
+  )));
+  return $post->ID;
+}
+
+function get_quizz($quizzId, $withResult = false) {
+  $alphaTable = array('A', 'B', 'C', 'D');
+  $post = get_post($quizzId);
+
+  get_field('video_picture', $postId)
+
+  $quizz = array(
+    'id' => $post->ID,
+    'question' => $post->post_title,
+    'participateTime' => quizz_participate_time(),
+    'respondTime' => quizz_respond_time(),
+    'answers' => array(
+      'A' => get_field('reponse_a', $quizzId),
+      'B' => get_field('reponse_b', $quizzId),
+      'C' => get_field('reponse_c', $quizzId),
+      'D' => get_field('reponse_d', $quizzId)
+    )
+  );
+
+  if($withResult) {
+    $quizz['result'] = get_field('resultat', $quizzId);
+  }
+
+  return $quizz;
+}
+
 // ---------------- CHANNELS ----------------
 
 function get_channel() {
@@ -104,6 +139,42 @@ function register_channel($channel) {
       array('%s', '%d')
     );
   }
+}
+
+function update_channel($channelInfos) {
+  $wpdb->update(
+    table_channels(),
+    array(
+      'playDate' => $channelInfos['playDate'],
+      'quizz' => $channelInfos['quizz'],
+      'askers' => implode(',', $channelInfos['askers']),
+      'members' => implode(',', $channelInfos['members']),
+      'returnResult' => implode(',', $channelInfos['returnResult']),
+      'results' => $channelInfos['results'],
+      'isPlaying' => $channelInfos['isPlaying'] ? 1 : 0
+    ),
+    array('channel' => $channelInfos['channel']),
+    array('%d', '%d', '%s', '%s', '%s', '%s', '%d'),
+    array('%s')
+  );
+}
+
+function get_channel_infos($channel) {
+  global $wpdb;
+  $row = $wpdb->get_row($wpdb->prepare('SELECT id, playDate, quizz, members, results, isPlaying FROM ' . table_channels() . ' AS channelCount WHERE channel=%s', $channel));
+  if(!is_null($row)) {
+    return array(
+      'id' => (int) $row->id,
+      'playDate' => (int) $row->playDate,
+      'quizz' => (int) $row->quizz,
+      'askers' => explode(',', $row->askers ? $row->askers : ''),
+      'members' => explode(',', $row->members ? $row->members : ''),
+      'returnResult' => explode(',', $row->returnResult ? $row->returnResult : ''),
+      'results' => $row->results,
+      'isPlaying' => (int) $row->isPlaying == 1 ? true : false
+    );
+  }
+  return false;
 }
 
 // ---------------- USERS ----------------
@@ -133,6 +204,20 @@ function register_user($channel, $username, $avatar) {
       array('%s', '%s', '%s')
     );
   }
+}
+
+function get_user_infos($channel, $username) {
+  global $wpdb;
+  $row = $wpdb->get_row($wpdb->prepare('SELECT id FROM ' . table_users() . ' WHERE channel=%s AND name=%s', $channel, $username));
+  if($row) {
+    return array(
+      'id' => $row->id,
+      'name' => $row->name,
+      'avatar' => $row->avatar,
+      'points' => (int) $row->points
+    );
+  }
+  return false;
 }
 
 // ---------------- AVATARS ----------------
@@ -187,8 +272,11 @@ function tq_create_tables() {
       channel varchar(255) DEFAULT NULL,
       playDate int(11) DEFAULT 0,
       quizz int(11) DEFAULT 0,
+      askers TEXT,
       members TEXT,
+      returnResult TEXT,
       results TEXT,
+      isPlaying int(1),
       UNIQUE KEY id (id)
     )');
 
