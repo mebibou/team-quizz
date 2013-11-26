@@ -1,23 +1,27 @@
+SPRINT 1:
+
   ☐ Créer l'API RESTfull
-  ☐ Ajouter des avatars
+  ☐ Créer l'aide de l'API à la racine /
+  ☐ Mettre à jour le README en y ajoutant l'install du serveur, les prérequis, etc
   ☐ Créer l'extension Chrome
-  ☐ Ecrire le README
+  ☐ Mettre à jour le README
+  ☐ Ajouter un max de questions (créer un fichier texte les contenant dans le repo)
+    ☐ http://codes-sources.commentcamarche.net/source/52879-quiz-html-css-et-javascript
 
-QUESTIONS:
-  ☐ http://codes-sources.commentcamarche.net/source/52879-quiz-html-css-et-javascript
+SPRINT 2:
 
+  ☐ Ajouter les special Events
+    ☐ Thief points from worst player
+    ☐ Double points
+    ☐ Every players give 1 point to winner
 
+SPRINT 3:
 
-EVENTS:
-  ☐ Thief points from worst player
-  ☐ Double points
-  ☐ Every players give 1 point to winner
+  ☐ Ajouter les Achivements
 
+SPRINT 4:
 
-ACHIVEMENTS:
-
-
-SPECIALS SKILLS TO CHANGE GAME:
-  ☐ Changer le temps avec un autre joueur
-  ☐ Eliminer une réponse
-  ☐ Ajouter du temp
+  ☐ Ajouter des capacités spéciales
+    ☐ Changer le temps avec un autre joueur
+    ☐ Eliminer une réponse
+    ☐ Ajouter du temp
