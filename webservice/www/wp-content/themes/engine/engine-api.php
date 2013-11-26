@@ -88,17 +88,18 @@ function api_result($result) {
 // ---------------- QUIZZ ----------------
 
 function get_random_quizz() {
-  $post = array_rand(get_posts(array(
-    'posts_per_page' => -1
-  )));
-  return $post->ID;
+  $posts = get_posts(array(
+    'numberposts' => 1,
+    'orderby' => 'ran'
+  ));
+  return $posts[0]->ID;
 }
 
 function get_quizz($quizzId, $withResult = false) {
   $alphaTable = array('A', 'B', 'C', 'D');
-  $post = get_post($quizzId);
+  $post = get_post((int)$quizzId);
 
-  get_field('video_picture', $postId)
+  get_field('video_picture', $postId);
 
   $quizz = array(
     'id' => $post->ID,
@@ -138,38 +139,46 @@ function register_channel($channel) {
       ),
       array('%s', '%d')
     );
+    return $wpdb->insert_id;
   }
+  return false;
 }
 
 function update_channel($channelInfos) {
+  global $wpdb;
   $wpdb->update(
     table_channels(),
     array(
-      'playDate' => $channelInfos['playDate'],
-      'quizz' => $channelInfos['quizz'],
-      'askers' => implode(',', $channelInfos['askers']),
+      'resultId' => (int) $channelInfos['resultId'],
+      'playDate' => (int) $channelInfos['playDate'],
+      'quizz' => (int) $channelInfos['quizz'],
       'members' => implode(',', $channelInfos['members']),
-      'returnResult' => implode(',', $channelInfos['returnResult']),
+      'returnResults' => implode(',', $channelInfos['returnResults']),
       'results' => $channelInfos['results'],
       'isPlaying' => $channelInfos['isPlaying'] ? 1 : 0
     ),
     array('channel' => $channelInfos['channel']),
-    array('%d', '%d', '%s', '%s', '%s', '%s', '%d'),
+    array('%d', '%d', '%d', '%s', '%s', '%s', '%s', '%d'),
     array('%s')
   );
 }
 
 function get_channel_infos($channel) {
   global $wpdb;
-  $row = $wpdb->get_row($wpdb->prepare('SELECT id, playDate, quizz, members, results, isPlaying FROM ' . table_channels() . ' AS channelCount WHERE channel=%s', $channel));
+  $row = $wpdb->get_row($wpdb->prepare('SELECT id, channel, resultId, playDate, quizz, members, returnResults, results, isPlaying FROM ' . table_channels() . ' AS channelCount WHERE channel=%s', $channel));
   if(!is_null($row)) {
+    $members = is_null($row->members) || !$row->members ? array() : $row->members;
+    $members = is_array($members) ? $members : explode(',', $members);
+    $returnResults = is_null($row->returnResults) || !$row->returnResults ? array() : $row->returnResults;
+    $returnResults = is_array($returnResults) ? $returnResults : explode(',', $returnResults);
     return array(
       'id' => (int) $row->id,
+      'channel' => $row->channel,
+      'resultId' => (int) $row->resultId,
       'playDate' => (int) $row->playDate,
       'quizz' => (int) $row->quizz,
-      'askers' => explode(',', $row->askers ? $row->askers : ''),
-      'members' => explode(',', $row->members ? $row->members : ''),
-      'returnResult' => explode(',', $row->returnResult ? $row->returnResult : ''),
+      'members' => $members,
+      'returnResults' => $returnResults,
       'results' => $row->results,
       'isPlaying' => (int) $row->isPlaying == 1 ? true : false
     );
@@ -189,9 +198,10 @@ function register_user($channel, $username, $avatar) {
         'avatar' => $avatar
       ),
       array('id' => $row->id),
-      array('%s', '%s', '%s'),
+      array('%s'),
       array('%d')
     );
+    return $row->id;
   }
   else {
     $wpdb->insert(
@@ -203,21 +213,36 @@ function register_user($channel, $username, $avatar) {
       ),
       array('%s', '%s', '%s')
     );
+    return $wpdb->insert_id;
   }
 }
 
-function get_user_infos($channel, $username) {
+function get_user_infos($channel, $userNameOrId) {
   global $wpdb;
-  $row = $wpdb->get_row($wpdb->prepare('SELECT id FROM ' . table_users() . ' WHERE channel=%s AND name=%s', $channel, $username));
+  $row = $wpdb->get_row($wpdb->prepare('SELECT id, channel, name, avatar, points FROM ' . table_users() . ' WHERE channel=%s AND '.(is_numeric($userNameOrId) ? 'id=%d' : 'name=%s'), $channel, $userNameOrId));
   if($row) {
     return array(
       'id' => $row->id,
+      'channel' => $row->channel,
       'name' => $row->name,
       'avatar' => $row->avatar,
       'points' => (int) $row->points
     );
   }
   return false;
+}
+
+function update_user_points($userId, $points) {
+  global $wpdb;
+  $wpdb->update(
+    table_users(),
+    array(
+      'points' => $points
+    ),
+    array('id' => $userId),
+    array('%d'),
+    array('%d')
+  );
 }
 
 // ---------------- AVATARS ----------------
@@ -229,6 +254,49 @@ function get_avatars() {
   return array_filter(scandir(AVATARSPATH), function($value) {
     return pathinfo($value, PATHINFO_EXTENSION) == 'png';
   });
+}
+
+// ---------------- RESULTS ----------------
+
+function get_last_result($channel) {
+  global $wpdb;
+  $row = $wpdb->get_row($wpdb->prepare('SELECT id, date, winner, members, message FROM ' . table_results() . ' WHERE channel=%s ORDER BY date DESC LIMIT 1', $channel));
+  if($row) {
+    $result = array(
+      'id' => $row->id,
+      'date' => (int) $row->date,
+      'winner' => $row->winner,
+      'members' => array(),
+      'message' => $row->message
+    );
+
+    $result['winner'] = get_user_infos($channel, $result['winner']);
+
+    $members = is_null($row->members) || !$row->members ? array() : $row->members;
+    $members = is_array($members) ? $members : explode(',', $members);
+    foreach($members as $member) {
+      $result['members'] []= get_user_infos($channel, (int) $member);
+    }
+
+    return $result;
+  }
+  return false;
+}
+
+function register_result($channel, $winnerId, $members, $message) {
+  global $wpdb;
+  $wpdb->insert(
+    table_results(),
+    array(
+      'channel' => $channel,
+      'date' => date('U'),
+      'winner' => $winnerId,
+      'members' => implode(',', $members),
+      'message' => $message,
+    ),
+    array('%s', '%d')
+  );
+  return $wpdb->insert_id;
 }
 
 // ---------------- TABLES ----------------
@@ -265,20 +333,20 @@ function tq_create_tables() {
       avatar varchar(255) DEFAULT NULL,
       points int(11) DEFAULT 0,
       UNIQUE KEY id (id)
-    )');
+    ) CHARACTER SET utf8 COLLATE utf8_general_ci');
 
     dbDelta('CREATE TABLE ' . $tableChannels . '(
       id int(11) NOT NULL AUTO_INCREMENT,
+      resultId int(11) DEFAULT 0,
       channel varchar(255) DEFAULT NULL,
       playDate int(11) DEFAULT 0,
       quizz int(11) DEFAULT 0,
-      askers TEXT,
-      members TEXT,
-      returnResult TEXT,
-      results TEXT,
-      isPlaying int(1),
+      members TEXT DEFAULT NULL,
+      returnResults TEXT DEFAULT NULL,
+      results TEXT DEFAULT NULL,
+      isPlaying int(1) DEFAULT 0,
       UNIQUE KEY id (id)
-    )');
+    ) CHARACTER SET utf8 COLLATE utf8_general_ci');
 
     dbDelta('CREATE TABLE ' . $tableResults . '(
       id int(11) NOT NULL AUTO_INCREMENT,
@@ -288,7 +356,7 @@ function tq_create_tables() {
       members TEXT,
       message TEXT,
       UNIQUE KEY id (id)
-    )');
+    ) CHARACTER SET utf8 COLLATE utf8_general_ci');
   }
 }
 add_action('init', 'tq_create_tables');

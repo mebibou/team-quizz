@@ -43,6 +43,8 @@ switch(get_query_var('action')) {
   case 'play':
     // TEST: http://teamquizz.xavierboubert.fr/play/Larousse?username=Xavier
 
+    $date = (int) date('U');
+
     $result = array('success' => false);
 
     $channel = get_channel();
@@ -66,51 +68,92 @@ switch(get_query_var('action')) {
       api_result($result);
     }
 
-    $quizz = null;
-    $quizzResult = null;
-
     $intervalTime = quizz_interval_time() * 60;
-    $respondTime = quizz_participate_time() + quizz_respond_time() + quizz_chrome_extension_ajax_time();
+    $askersTime = quizz_chrome_extension_ajax_time() + 1;
+    $respondTime = $askersTime + quizz_participate_time() + quizz_respond_time();
 
     // START PLAYING QUIZZ
-    if(!$channelInfos['isPlaying'] && $channelInfos['playDate'] < date('U') - $intervalTime) {
+    if(!$channelInfos['isPlaying'] && $channelInfos['playDate'] < $date - $intervalTime) {
       $channelInfos['isPlaying'] = true;
       $channelInfos['quizz'] = get_random_quizz();
-      $channelInfos['playDate'] = date('U');
-      $channelInfos['askers'] = '';
-      $channelInfos['members'] = '';
-      $channelInfos['returnResult'] = '';
-      $channelInfos['results'] = '';
+      $channelInfos['playDate'] = $date;
+      $channelInfos['members'] = array();
+      $channelInfos['returnResults'] = array();
+      $channelInfos['results'] = '{"results": []}';
       update_channel($channelInfos);
     }
 
     // GET QUIZZ
-    if($channelInfos['isPlaying'] && !in_array($userInfos['id'], $channelInfos['askers'])) {
-      $channelInfos['askers'] []= $userInfos['id'];
+    if($channelInfos['isPlaying'] && $channelInfos['playDate'] > $date - $askersTime && !in_array($userInfos['id'], $channelInfos['members'])) {
+      $channelInfos['members'] []= $userInfos['id'];
       update_channel($channelInfos);
 
       $result['quizz'] = get_quizz($channelInfos['quizz']);
     }
 
     // STOP PLAYING ACTUAL QUIZZ
-    if($channelInfos['isPlaying'] && $channelInfos['playDate'] < date('U') - $respondTime) {
+    if($channelInfos['isPlaying'] && $channelInfos['playDate'] < $date - $respondTime) {
+      $channelInfos['isPlaying'] = false;
 
+      $members = $channelInfos['members'];
+
+      if(count($members) > 0) {
+
+        $results = json_decode($channelInfos['results'], true); // {results: [[{user: <int>, answer: <string>, time: <int>}, ...]}
+        $results = $results['results'];
+        $quizz = get_quizz($channelInfos['quizz'], true);
+
+        $winnerId = 0;
+        $winnerTime = 0;
+        foreach ($members as $member) {
+          foreach($results as $resultData) {
+            if((int) $resultData['user'] == (int) $member) {
+              if($resultData['answer'] == $quizz['result'] && ($winnerId === 0 || $winnerTime > (int) $resultData['time'])) {
+                $winnerId = (int) $member;
+                $winnerTime = (int) $resultData['time'];
+              }
+              break;
+            }
+          }
+        }
+
+        $message = '';
+        if(count($members) === 1) {
+          $aloneGuy = get_user_infos($channel, (int) $members[0]);
+          $message = sprintf('<img src="%s" /> %s est le seul participant au quizz. Il ne remporte aucun point.', $aloneGuy['avatar'], $aloneGuy['name']);
+        }
+        else if($winnerId === 0)  {
+          $message = sprintf('Aucun des %d participants n\'a donné la bonne réponse !');
+        }
+        else {
+          $winner = get_user_infos($channel, $winnerId);
+          $winner['points'] += quizz_win_points();
+          update_user_points($winner['id'], $winner['points']);
+
+          $message = sprintf('<img src="%s" /> %s est le grand vainqueur du quizz avec une réponse en %s sec ! Il remporte %d points.', $winner['avatar'], $winnerTime / 100, $winner['name'], quizz_win_points());
+        }
+
+        $resultId = register_result($channel, $winnerId, $members, $message);
+
+        $channelInfos['resultId'] = $resultId;
+        $channelInfos['playDate'] = $date;
+      }
+
+      update_channel($channelInfos);
     }
 
-    // GET QUIZZ RESPOND
-    if(!$channelInfos['isPlaying'] && in_array($userInfos['id'], $channelInfos['members']) && !in_array($userInfos['id'], $channelInfos['returnResult'])) {
+    // GET QUIZZ RESULT
+    if(!$channelInfos['isPlaying'] && in_array($userInfos['id'], $channelInfos['members']) && !in_array($userInfos['id'], $channelInfos['returnResults'])) {
 
-      $channelInfos['returnResult'] []= $userInfos['id'];
+      $channelInfos['returnResults'] []= $userInfos['id'];
       update_channel($channelInfos);
 
       $userInfos = get_user_infos($channel, $username);
 
-      $result['quizzResult'] = array();
+      $result['quizzResult'] = get_last_result($channel);
     }
 
     $result['success'] = true;
-    $result['quizz'] = $quizz;
-    $result['quizzResult'] = $quizzResult;
     $result['points'] = $userInfos['points'];
 
     api_result($result);
