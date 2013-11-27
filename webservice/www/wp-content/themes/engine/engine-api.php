@@ -276,25 +276,48 @@ function get_avatars() {
 
 // ---------------- RESULTS ----------------
 
+function get_result_complete_info($channel, $result) {
+  $result['winner'] = get_user_infos($channel, $result['winner']);
+
+  $members = is_null($result['members']) || !$result['members'] ? array() : $result['members'];
+  $members = is_array($members) ? $members : explode(',', $members);
+  $result['members'] = array();
+  foreach($members as $member) {
+    $result['members'] []= get_user_infos($channel, (int) $member);
+  }
+
+  return $result;
+}
+
+function get_results($channel, $count) {
+  global $wpdb;
+
+  $results = array();
+  $rows = $wpdb->get_results($wpdb->prepare('SELECT id, date, winner, members, message FROM ' . table_results() . ' WHERE channel=%s ORDER BY date DESC LIMIT ' . $count, $channel));
+  foreach($rows as $row) {
+    $results []= get_result_complete_info($channel, array(
+      'id' => $row->id,
+      'date' => (int) $row->date,
+      'winner' => (int) $row->winner,
+      'members' => $row->members,
+      'message' => $row->message
+    ));
+  }
+
+  return $results;
+}
+
 function get_last_result($channel) {
   global $wpdb;
   $row = $wpdb->get_row($wpdb->prepare('SELECT id, date, winner, members, message FROM ' . table_results() . ' WHERE channel=%s ORDER BY date DESC LIMIT 1', $channel));
   if($row) {
-    $result = array(
+    $result = get_result_complete_info($channel, array(
       'id' => $row->id,
       'date' => (int) $row->date,
-      'winner' => $row->winner,
-      'members' => array(),
+      'winner' => (int) $row->winner,
+      'members' => $row->members,
       'message' => $row->message
-    );
-
-    $result['winner'] = get_user_infos($channel, $result['winner']);
-
-    $members = is_null($row->members) || !$row->members ? array() : $row->members;
-    $members = is_array($members) ? $members : explode(',', $members);
-    foreach($members as $member) {
-      $result['members'] []= get_user_infos($channel, (int) $member);
-    }
+    ));
 
     return $result;
   }

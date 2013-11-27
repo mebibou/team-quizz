@@ -167,6 +167,17 @@ switch(get_query_var('action')) {
   case 'results':
     // TEST: http://teamquizz.xavierboubert.fr/results/Larousse?count=5
 
+    $channel = get_channel();
+
+    $count = isset($_GET['count']) && is_numeric($_GET['count']) ? (int) $_GET['count'] : 5;
+
+    $result = array(
+      'success' => true,
+      'results' => get_results($channel, $count)
+    );
+
+    api_result($result);
+
     break;
   case 'scores':
     // TEST: http://teamquizz.xavierboubert.fr/scores/Larousse
