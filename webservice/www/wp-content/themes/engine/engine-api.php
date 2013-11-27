@@ -24,7 +24,7 @@
  * /play/<channel>?username=<string>
  *   return: {quizz: <QuizzObject or null>, quizzResult: <QuizzResultObject or null>, points: <int>}
  *
- * /answer/<channel>?username=<string>&quizzId=<int>&quizzAnswer=<string>
+ * /answer/<channel>?username=<string>&answer=<string>
  *   return: {success: <bool> [, error=<string]}
  *
  * /results/<channel>?count=<int>
@@ -187,6 +187,24 @@ function get_channel_infos($channel) {
 }
 
 // ---------------- USERS ----------------
+
+function get_all_users($channel) {
+  global $wpdb;
+
+  $users = array();
+  $rows = $wpdb->get_results($wpdb->prepare('SELECT id, channel, name, avatar, points FROM ' . table_users() . ' WHERE channel=%s', $channel));
+  foreach($rows as $row) {
+    $users []= array(
+      'id' => $row->id,
+      'channel' => $row->channel,
+      'name' => $row->name,
+      'avatar' => $row->avatar,
+      'points' => (int) $row->points
+    );
+  }
+
+  return $users;
+}
 
 function register_user($channel, $username, $avatar) {
   global $wpdb;

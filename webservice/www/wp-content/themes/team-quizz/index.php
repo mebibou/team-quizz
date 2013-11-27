@@ -160,8 +160,26 @@ switch(get_query_var('action')) {
 
     break;
   case 'answer':
+    // TEST: http://teamquizz.xavierboubert.fr/answer/Larousse?username=Xavier&answer=C
+
+
     break;
   case 'results':
+    // TEST: http://teamquizz.xavierboubert.fr/results/Larousse?count=5
+
+    break;
+  case 'scores':
+    // TEST: http://teamquizz.xavierboubert.fr/scores/Larousse
+
+    $channel = get_channel();
+
+    $result = array(
+      'success' => true,
+      'users' => get_all_users($channel)
+    );
+
+    api_result($result);
+
     break;
   default:
 }
