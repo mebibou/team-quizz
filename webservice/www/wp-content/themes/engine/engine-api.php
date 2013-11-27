@@ -24,7 +24,7 @@
  * /play/<channel>?username=<string>
  *   return: {quizz: <QuizzObject or null>, quizzResult: <QuizzResultObject or null>, points: <int>}
  *
- * /answer/<channel>?username=<string>&answer=<string>
+ * /answer/<channel>?username=<string>&answer=<string>&time=<int>
  *   return: {success: <bool> [, error=<string]}
  *
  * /results/<channel>?count=<int>

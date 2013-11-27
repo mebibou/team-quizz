@@ -160,14 +160,84 @@ switch(get_query_var('action')) {
 
     break;
   case 'answer':
-    // TEST: http://teamquizz.xavierboubert.fr/answer/Larousse?username=Xavier&answer=C
+    // TEST: http://teamquizz.xavierboubert.fr/answer/Larousse?username=Xavier&answer=C&time=1500
 
+    $result = array('success' => false);
+
+    $channel = get_channel();
+    $channelInfos = get_channel_infos($channel);
+
+    if(!$channelInfos) {
+      $result['error'] = 'Ce channel n\'existe pas';
+      api_result($result);
+    }
+
+    if(!isset($_GET['username'])) {
+      $result['error'] = 'Vous devez renseigner un username';
+      api_result($result);
+    }
+
+    $username = $_GET['username'];
+    $userInfos = get_user_infos($channel, $username);
+
+    if(!$userInfos) {
+      $result['error'] = 'Cet utilisateur n\'existe pas';
+      api_result($result);
+    }
+
+    if(!isset($_GET['answer'])) {
+      $result['error'] = 'Vous devez renseigner un answer';
+      api_result($result);
+    }
+
+    $answer = $_GET['answer'];
+
+    if(!isset($_GET['time']) || !is_numeric($_GET['time'])) {
+      $result['error'] = 'Vous devez renseigner un time';
+      api_result($result);
+    }
+
+    $time = (int) $_GET['time'];
+
+    if(!$channelInfos['isPlaying']) {
+      $result['error'] = 'Aucun quizz en cours sur ce channel';
+      api_result($result);
+    }
+
+    $results = json_decode($channelInfos['results'], true); // {results: [[{user: <int>, answer: <string>, time: <int>}, ...]}
+    $results = $results['results'];
+
+    foreach($results as $resultData) {
+      if((int) $resultData['user'] == (int) $userInfos['id']) {
+        $result['error'] = 'Cet username a déja répondu au quizz en cours.';
+        api_result($result);
+      }
+    }
+
+    $results []= array(
+      'user' => (int) $userInfos['id'],
+      'answer' => $answer,
+      'time' => $time
+    );
+
+    $channelInfos['results'] = json_encode(array('results' => $results));
+    update_channel($channelInfos);
+
+    $result['success'] = true;
+
+    api_result($result);
 
     break;
   case 'results':
     // TEST: http://teamquizz.xavierboubert.fr/results/Larousse?count=5
 
     $channel = get_channel();
+    $channelInfos = get_channel_infos($channel);
+
+    if(!$channelInfos) {
+      $result['error'] = 'Ce channel n\'existe pas';
+      api_result($result);
+    }
 
     $count = isset($_GET['count']) && is_numeric($_GET['count']) ? (int) $_GET['count'] : 5;
 
@@ -183,6 +253,12 @@ switch(get_query_var('action')) {
     // TEST: http://teamquizz.xavierboubert.fr/scores/Larousse
 
     $channel = get_channel();
+    $channelInfos = get_channel_infos($channel);
+
+    if(!$channelInfos) {
+      $result['error'] = 'Ce channel n\'existe pas';
+      api_result($result);
+    }
 
     $result = array(
       'success' => true,
