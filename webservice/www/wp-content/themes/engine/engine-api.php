@@ -1,24 +1,5 @@
 <?php
 /*
- * = API RESTful =========================================================
- *
- * UserObject:
- *   {username: <string>, avatar: <string>, points: <int>}
- *
- * QuizzObject:
- *   {id: <int>, participateTime: <int>, respondTime: <int>, question: <string>, answers: {'A': <string>, 'B': <string>, 'C': <string>, 'D': <string>, ...}}
- *
- * QuizzResultObject:
- *   {date: <string>, winner: <UserObject>, members: [<UserObject>, ...], message: <string>}
- *
- * /results/<channel>?count=<int>
- *   return: {results: [<QuizzResultObject>, ...]}
- *
- * /scores/<channel>
- *   return: {scores: [<UserObject>, ...]}
- *
- *
- *
  * = Chrome extension actions order =========================================================
  *
  * First start:

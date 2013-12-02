@@ -125,20 +125,20 @@ switch(get_query_var('action')) {
           }
         }
 
-        $message = '';
+        $message = sprintf(__('The anwser was the letter %s!', 'teamquizz'), $quizz['result']) . '<br />';
         if(count($members) === 1) {
           $aloneGuy = get_user_infos($channel, (int) $members[0]);
-          $message = sprintf('<img src="%s" /> ' + __('%s is the only one member of this quizz. He can\'t win points.', 'teamquizz'), $aloneGuy['avatar'], $aloneGuy['name']);
+          $message .= sprintf('<img src="%s" /> ' + __('%s is the only one member of this quizz. He can\'t win points.', 'teamquizz'), $aloneGuy['avatar'], $aloneGuy['name']);
         }
         else if($winnerId === 0)  {
-          $message = sprintf(__('None of the %d members don\'t gave the right answer!', 'teamquizz'));
+          $message .= sprintf(__('None of the %d members don\'t gave the right answer!', 'teamquizz'));
         }
         else {
           $winner = get_user_infos($channel, $winnerId);
           $winner['points'] += quizz_win_points();
           update_user_points($winner['id'], $winner['points']);
 
-          $message = sprintf('<img src="%s" /> ' + __('%s is the winner of the quiz with a response in %s seconds! He won %s points.', 'teamquizz'), $winner['avatar'], $winnerTime / 100, $winner['name'], quizz_win_points());
+          $message .= sprintf('<img src="%s" /> ' + __('%s is the winner of the quiz with a response in %s seconds! He won %s points.', 'teamquizz'), $winner['avatar'], $winnerTime / 100, $winner['name'], quizz_win_points());
         }
 
         $resultId = register_result($channel, $winnerId, $members, $message);

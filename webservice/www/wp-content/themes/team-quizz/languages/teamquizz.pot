@@ -45,3 +45,6 @@ msgstr ""
 
 msgid "This user has already answered for the quizz in progress."
 msgstr ""
+
+msgid "The anwser was the letter %s!"
+msgstr ""

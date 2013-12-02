@@ -1,9 +1,5 @@
 SPRINT 1:
 
-  ☐ Créer l'API RESTfull
-    ☐ Problème sur le format d'encodage des accents (UTF8)
-    ☐ Revoir les textes de l'API
-    ☐ Tout passer en anglais
   ☐ Mettre à jour le README en y ajoutant l'install du serveur, les prérequis, etc
   ☐ Créer l'extension Chrome
   ☐ Mettre à jour le README
