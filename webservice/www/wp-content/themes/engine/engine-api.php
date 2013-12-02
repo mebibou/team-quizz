@@ -11,22 +11,6 @@
  * QuizzResultObject:
  *   {date: <string>, winner: <UserObject>, members: [<UserObject>, ...], message: <string>}
  *
- *
- * /
- *   return: HTML with help
- *
- * /avatars
- *   return: {avatars: [<string>, <string>, ...]}
- *
- * /register/<channel>?username=<string>&avatar=<string>
- *   return: {success: <bool> [, error=<string]}
- *
- * /play/<channel>?username=<string>
- *   return: {quizz: <QuizzObject or null>, quizzResult: <QuizzResultObject or null>, points: <int>}
- *
- * /answer/<channel>?username=<string>&answer=<string>&time=<int>
- *   return: {success: <bool> [, error=<string]}
- *
  * /results/<channel>?count=<int>
  *   return: {results: [<QuizzResultObject>, ...]}
  *
@@ -64,10 +48,15 @@ if(!function_exists('add_action')) {
 function tq_rewrites_url() {
   add_rewrite_rule('avatars/?$', 'index.php?action=avatars', 'top');
   add_rewrite_rule('register/([0-9a-zA-Z-_]+)/?$', 'index.php?action=register&channel=$matches[1]', 'top');
+  add_rewrite_rule('register/?$', 'index.php?action=register', 'top');
   add_rewrite_rule('play/([0-9a-zA-Z-_]+)/?$', 'index.php?action=play&channel=$matches[1]', 'top');
+  add_rewrite_rule('play/?$', 'index.php?action=play', 'top');
   add_rewrite_rule('answer/([0-9a-zA-Z-_]+)/?$', 'index.php?action=answer&channel=$matches[1]', 'top');
+  add_rewrite_rule('answer/?$', 'index.php?action=answer', 'top');
   add_rewrite_rule('results/([0-9a-zA-Z-_]+)/?$', 'index.php?action=results&channel=$matches[1]', 'top');
+  add_rewrite_rule('results/?$', 'index.php?action=results', 'top');
   add_rewrite_rule('scores/([0-9a-zA-Z-_]+)/?$', 'index.php?action=scores&channel=$matches[1]', 'top');
+  add_rewrite_rule('scores/?$', 'index.php?action=scores', 'top');
 }
 add_action('init', 'tq_rewrites_url');
 

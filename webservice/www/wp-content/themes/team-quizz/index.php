@@ -19,17 +19,22 @@ switch(get_query_var('action')) {
     $result = array('success' => false);
 
     $channel = get_channel();
-    if(!isset($_GET['username'])) {
+
+    if(!$channel) {
+      $result['error'] = 'Vous devez renseigner un nom de channel';
+      api_result($result);
+    }
+    else if(!isset($_POST['username'])) {
       $result['error'] = 'Vous devez renseigner un username';
       api_result($result);
     }
-    else if(!isset($_GET['avatar'])) {
+    else if(!isset($_POST['avatar'])) {
       $result['error'] = 'Vous devez renseigner un avatar';
       api_result($result);
     }
 
-    $username = $_GET['username'];
-    $avatar = $_GET['avatar'];
+    $username = $_POST['username'];
+    $avatar = $_POST['avatar'];
 
     register_channel($channel);
 
@@ -50,12 +55,15 @@ switch(get_query_var('action')) {
     $channel = get_channel();
     $channelInfos = get_channel_infos($channel);
 
-    if(!$channelInfos) {
+    if(!$channel) {
+      $result['error'] = 'Vous devez renseigner un nom de channel';
+      api_result($result);
+    }
+    else if(!$channelInfos) {
       $result['error'] = 'Ce channel n\'existe pas';
       api_result($result);
     }
-
-    if(!isset($_GET['username'])) {
+    else if(!isset($_GET['username'])) {
       $result['error'] = 'Vous devez renseigner un username';
       api_result($result);
     }
@@ -167,17 +175,20 @@ switch(get_query_var('action')) {
     $channel = get_channel();
     $channelInfos = get_channel_infos($channel);
 
-    if(!$channelInfos) {
+    if(!$channel) {
+      $result['error'] = 'Vous devez renseigner un nom de channel';
+      api_result($result);
+    }
+    else if(!$channelInfos) {
       $result['error'] = 'Ce channel n\'existe pas';
       api_result($result);
     }
-
-    if(!isset($_GET['username'])) {
+    else if(!isset($_POST['username'])) {
       $result['error'] = 'Vous devez renseigner un username';
       api_result($result);
     }
 
-    $username = $_GET['username'];
+    $username = $_POST['username'];
     $userInfos = get_user_infos($channel, $username);
 
     if(!$userInfos) {
@@ -185,19 +196,19 @@ switch(get_query_var('action')) {
       api_result($result);
     }
 
-    if(!isset($_GET['answer'])) {
+    if(!isset($_POST['answer'])) {
       $result['error'] = 'Vous devez renseigner un answer';
       api_result($result);
     }
 
-    $answer = $_GET['answer'];
+    $answer = $_POST['answer'];
 
-    if(!isset($_GET['time']) || !is_numeric($_GET['time'])) {
+    if(!isset($_POST['time']) || !is_numeric($_POST['time'])) {
       $result['error'] = 'Vous devez renseigner un time';
       api_result($result);
     }
 
-    $time = (int) $_GET['time'];
+    $time = (int) $_POST['time'];
 
     if(!$channelInfos['isPlaying']) {
       $result['error'] = 'Aucun quizz en cours sur ce channel';
@@ -231,10 +242,16 @@ switch(get_query_var('action')) {
   case 'results':
     // TEST: http://teamquizz.xavierboubert.fr/results/Larousse?count=5
 
+    $result = array('success' => false);
+
     $channel = get_channel();
     $channelInfos = get_channel_infos($channel);
 
-    if(!$channelInfos) {
+    if(!$channel) {
+      $result['error'] = 'Vous devez renseigner un nom de channel';
+      api_result($result);
+    }
+    else if(!$channelInfos) {
       $result['error'] = 'Ce channel n\'existe pas';
       api_result($result);
     }
@@ -252,10 +269,16 @@ switch(get_query_var('action')) {
   case 'scores':
     // TEST: http://teamquizz.xavierboubert.fr/scores/Larousse
 
+    $result = array('success' => false);
+
     $channel = get_channel();
     $channelInfos = get_channel_infos($channel);
 
-    if(!$channelInfos) {
+    if(!$channel) {
+      $result['error'] = 'Vous devez renseigner un nom de channel';
+      api_result($result);
+    }
+    else if(!$channelInfos) {
       $result['error'] = 'Ce channel n\'existe pas';
       api_result($result);
     }
@@ -269,4 +292,5 @@ switch(get_query_var('action')) {
 
     break;
   default:
+    require 'api-doc.php';
 }
