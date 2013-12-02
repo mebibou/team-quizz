@@ -18,6 +18,7 @@
   "browser_action": {
     "default_title": "Team Quizz",
     "default_icon": "assets/images/icon.png",
+    "default_popup": "popup.html"
   },
   "background": {
     "scripts": ["js/app.js"],

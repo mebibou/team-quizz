@@ -1,0 +1,112 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 320px;
+  height: 404px;
+  background: #f8f8f8;
+  overflow: hidden;
+  position: relative;
+  font-family: 'Open Sans', sans-serif;
+}
+
+i {
+  font-style: normal;
+}
+
+.clear {
+  clear: both;
+}
+
+.block {
+  min-height: 63px;
+  padding-bottom: 10px;
+  background: url('../images/block-divider.png') repeat-x;
+  clear: both;
+}
+
+.block.first {
+  background: none;
+  margin-top: -15px;
+}
+
+.user-circle {
+  float: left;
+  height: 52px;
+  margin: 27px 0 0 10px;
+  position: relative;
+}
+
+.user-circle.offline {
+  opacity: 0.4;
+}
+
+.user-circle i.user-points {
+  color: #FFF;
+  background: #00ADEF;
+  padding: 2px 6px;
+  border-radius: 22px;
+  border: 2px solid #FFF;
+  -webkit-box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.1);
+  font-size: 11px;
+  margin-left: -12px;
+  z-index: 1;
+  position: relative;
+  font-weight: 600;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+.user-circle.top1 i.user-points {
+  background: #E1B700;
+}
+
+.user-circle i.user-status {
+  position: absolute;
+  bottom: 0;
+  left: 52px;
+  width: 8px;
+  height: 8px;
+  float: left;
+}
+
+.user-circle.online i.user-status {
+  background: url('../images/user-online.png') no-repeat;
+}
+
+.user-circle.offline i.user-status {
+  background: url('../images/user-offline.png') no-repeat;
+}
+
+.user-circle .avatar {
+  float: left;
+  width: 48px;
+  height: 48px;
+  border-radius: 100%;
+  background: white;
+  border: 2px solid white;
+  -webkit-box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.1);
+}
+
+.user-circle .title {
+  display: none;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  background: #000;
+  border-radius: 20px;
+  color: white;
+}
+
+.user-circle:hover .title {
+  display: block;
+}
+
+.footer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 40px;
+  width: 100%;
+  background: #FF1D77 url('../images/footer-divider.png') repeat-x;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
