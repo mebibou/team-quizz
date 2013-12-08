@@ -19,7 +19,6 @@ i {
 }
 
 i.icon-flame {
-  /*background: url('../images/icon-flame.png') no-repeat;*/
   width: 33px;
   height: 60px;
 }
@@ -112,10 +111,16 @@ i.spellbook-particles-3 {
   background-position: -28px 0;
 }
 
-i.icon-market {
-  background: url('../images/icon-market.png') no-repeat;
-  width: 38px;
-  height: 35px;
+i.icon-gear {
+  background: url('../images/icon-gear.png') no-repeat;
+  width: 24px;
+  height: 23px;
+}
+
+i.icon-gears {
+  background: url('../images/icon-gears.png') no-repeat;
+  width: 34px;
+  height: 30px;
 }
 
 .block {
@@ -236,6 +241,39 @@ i.icon-market {
   border-bottom-right-radius: 5px;
 }
 
+.footer .options {
+  position: absolute;
+  top: 5px;
+  left: 10px;
+  width: 34px;
+  height: 30px;
+}
+
+.footer .options i.icon-gear {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+@-webkit-keyframes gear-animation {
+  from {
+    -webkit-transform:rotate(0deg);
+  }
+  to {
+    -webkit-transform:rotate(180deg);
+  }
+}
+
+.footer .options:hover i.icon-gear {
+  -webkit-animation: gear-animation 1s linear infinite;
+}
+
+.footer .options i.icon-gears {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
 .bookspell {
   display: block;
   position: absolute;
@@ -259,10 +297,6 @@ i.icon-market {
 
 .bookspell:hover i.icon-flame {
   display: block;
-}
-
-.bookspell:hover i.spellbook-particles-1, .bookspell:hover i.spellbook-particles-2, .bookspell:hover i.spellbook-particles-3 {
-  /*display: none;*/
 }
 
 @-webkit-keyframes particles-1 {
