@@ -9,17 +9,85 @@ html, body {
   font-family: 'Open Sans', sans-serif;
 }
 
-i {
-  font-style: normal;
-}
-
 .clear {
   clear: both;
 }
 
+i {
+  font-style: normal;
+  display: block;
+}
+
+i.icon-flame {
+  /*background: url('../images/icon-flame.png') no-repeat;*/
+  width: 33px;
+  height: 60px;
+}
+
+@-webkit-keyframes icon-flame-animation {
+  from {
+    opacity: 0;
+    top: 5px;
+  }
+  25% {
+    opacity: 1;
+    top: -7px;
+  }
+  50% {
+    opacity: 0;
+    top: -20px;
+  }
+  to {
+    opacity: 0;
+    top: 5px;
+  }
+}
+
+i.icon-flame.animated {
+  overflow: visible;
+}
+
+i.icon-flame.animated i {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 33px;
+  height: 60px;
+}
+
+i.icon-flame.animated i.fire-base {
+  opacity: .5;
+  background: url('../images/icon-flame.png') no-repeat;
+}
+
+i.icon-flame.animated i.fire-1 {
+  background: url('../images/icon-flame.png') no-repeat;
+  -webkit-animation: icon-flame-animation 1s linear infinite;
+}
+
+i.icon-flame.animated i.fire-2 {
+  background: url('../images/icon-flame-invert.png') no-repeat;
+  -webkit-animation: icon-flame-animation 1s .25s linear infinite;
+}
+
+i.icon-flame.animated i.fire-3 {
+  background: url('../images/icon-flame.png') no-repeat;
+  -webkit-animation: icon-flame-animation 1s .5s linear infinite;
+}
+
+i.icon-flame.animated i.fire-4 {
+  background: url('../images/icon-flame-invert.png') no-repeat;
+  -webkit-animation: icon-flame-animation 1s .75s linear infinite;
+}
+
+i.icon-market {
+  background: url('../images/icon-market.png') no-repeat;
+  width: 38px;
+  height: 35px;
+}
+
 .block {
-  min-height: 63px;
-  padding-bottom: 10px;
+  padding-bottom: 25px;
   background: url('../images/block-divider.png') repeat-x;
   clear: both;
 }
@@ -31,9 +99,13 @@ i {
 
 .user-circle {
   float: left;
-  height: 52px;
-  margin: 27px 0 0 10px;
+  height: 39px;
+  margin: 25px 0 0 10px;
   position: relative;
+}
+
+.user-circle.big {
+  height: 52px;
 }
 
 .user-circle.offline {
@@ -47,12 +119,17 @@ i {
   border-radius: 22px;
   border: 2px solid #FFF;
   -webkit-box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.1);
-  font-size: 11px;
+  font-size: 9px;
   margin-left: -12px;
   z-index: 1;
   position: relative;
   font-weight: 600;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+  float: left;
+}
+
+.user-circle.big i.user-points {
+  font-size: 11px;
 }
 
 .user-circle.top1 i.user-points {
@@ -62,10 +139,14 @@ i {
 .user-circle i.user-status {
   position: absolute;
   bottom: 0;
-  left: 52px;
+  left: 39px;
   width: 8px;
   height: 8px;
   float: left;
+}
+
+.user-circle.big i.user-status {
+  left: 52px;
 }
 
 .user-circle.online i.user-status {
@@ -78,12 +159,17 @@ i {
 
 .user-circle .avatar {
   float: left;
-  width: 48px;
-  height: 48px;
+  width: 35px;
+  height: 35px;
   border-radius: 100%;
   background: white;
   border: 2px solid white;
   -webkit-box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.1);
+}
+
+.user-circle.big .avatar {
+  width: 48px;
+  height: 48px;
 }
 
 .user-circle .title {
@@ -94,6 +180,13 @@ i {
   background: #000;
   border-radius: 20px;
   color: white;
+  font-size: 11px;
+  padding: 2px 5px;
+  max-width: 40px;
+  text-overflow: ellipsis;
+  height: 15px;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .user-circle:hover .title {
@@ -106,7 +199,19 @@ i {
   bottom: 0;
   height: 40px;
   width: 100%;
-  background: #FF1D77 url('../images/footer-divider.png') repeat-x;
+  background: #FF2E12 url('../images/footer-divider.png') repeat-x;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
+}
+
+.footer i.icon-flame {
+  position: absolute;
+  bottom: 13px;
+  right: 10px;
+}
+
+.footer i.icon-market {
+  position: absolute;
+  bottom: 6px;
+  right: 7px;
 }

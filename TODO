@@ -1,6 +1,20 @@
 SPRINT 1:
 
   ☐ Créer l'extension Chrome
+
+  - Membres
+  - Moi
+  - Le channel
+  - Mes skills
+  - Mes achivements
+
+  [Voir le marché]
+  [Voir les derniers resultats]
+  [Voir les derniers scores]
+
+  [paramères]
+  [Ajouter une question]
+
   ☐ Mettre à jour le README en y ajoutant l'install du serveur, les prérequis, etc
   ☐ Ajouter un max de questions (créer un fichier texte les contenant dans le repo)
     ☐ http://codes-sources.commentcamarche.net/source/52879-quiz-html-css-et-javascript
