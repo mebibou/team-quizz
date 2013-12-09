@@ -322,7 +322,7 @@ i.icon-gears {
   top: 60px;
   opacity: 0;
   -webkit-animation: particles-opacity 6s linear infinite;
-  -webkit-animation: particles-1 6s 3s linear infinite;
+  -webkit-animation: particles-1 6s 4s linear infinite;
 }
 
 .bookspell .particles-2 {
@@ -342,7 +342,7 @@ i.icon-gears {
 }
 
 .bookspell .particles-4 {
-  left: 42px;
+  left: 12px;
   top: 60px;
   opacity: 0;
   -webkit-animation: particles-opacity 6s linear infinite;
@@ -366,7 +366,7 @@ i.icon-gears {
 }
 
 .bookspell .particles-7 {
-  left: 84px;
+  left: 36px;
   top: 60px;
   opacity: 0;
   -webkit-animation: particles-opacity 6s linear infinite;
